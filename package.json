@@ -1,0 +1,22 @@
+{
+  "name": "plugin-hs-generate-item-information",
+  "version": "3.2.3",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build-app": "giteeteam-apps build --prod",
+    "build-app-dev": "giteeteam-apps build"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@giteeteam/apps-cli": "^0.2.2"
+  },
+  "dependencies": {
+    "@giteeteam/apps-team-api": "^0.2.6",
+    "tslib": "^2.4.0"
+  }
+}
