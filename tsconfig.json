@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "types": ["node"],
     "target": "es5",
     "module": "esnext",
     "moduleResolution": "node",
@@ -16,11 +15,19 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
     },
     "lib": ["dom", "dom.iterable", "esnext", "ESNext.Intl", "ES2018.Intl"],
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ]
   },
-  "include": ["src/**/*", "typings.d.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*",
+    "typings.d.ts",
+  ],
+  "exclude": ["node_modules", "dist"],
 }

@@ -1,12 +1,12 @@
 app:
   key: svft_app
-  version: '1.0.1'
-  name: 'svft对接'
+  version: "1.0.1"
+  name: "svft对接"
 modules:
   webtrigger:
     # 根据版本id获取svft相关参数
     - key: getSvftParams
-      function:  get-svft-params
+      function: get-svft-params
     # 发布版本
     - key: publicVersion
       function: public-version
@@ -17,4 +17,17 @@ modules:
     # 发布版本
     - key: public-version
       handler: trigger.publicVersion
-
+  proxima:versionAction:
+    - key: version-action
+      resource: main
+      title: 创建补丁版本
+      loadType: Micro
+      route: /admin
+      displayCondition:
+        programVersion: true
+  proxima:versionListHeaderAction:
+    - key: version-list-header-action
+      resource: main
+      title: 创建补丁版本
+      loadType: Micro
+      route: /admin0
