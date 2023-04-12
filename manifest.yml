@@ -1,6 +1,6 @@
 app:
   key: svft_app
-  version: "1.0.1"
+  version: "1.0.2-alpha.2"
   name: "svft对接"
 modules:
   webtrigger:
@@ -20,14 +20,17 @@ modules:
   proxima:versionAction:
     - key: version-action
       resource: main
-      title: 创建补丁版本
+      title: 编辑版本
       loadType: Micro
-      route: /admin
+      route: /edit-version
       displayCondition:
         programVersion: true
   proxima:versionListHeaderAction:
     - key: version-list-header-action
       resource: main
-      title: 创建补丁版本
+      title: 新建版本
       loadType: Micro
-      route: /admin0
+      route: /add-version
+resources:
+  - key: main
+    path: ./dist/

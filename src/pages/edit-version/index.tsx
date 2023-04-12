@@ -1,7 +1,6 @@
 import React from "react";
-import { Button } from "antd";
 export const CopyVersion: React.FC = () => {
-  return <Button type="primary">copy 版本</Button>;
+  return <span>编辑</span>;
 };
 
 export default CopyVersion;
