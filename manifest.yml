@@ -30,7 +30,7 @@ modules:
       resource: main
       title: 新建版本
       loadType: Micro
-      route: /add-version
+      route: /
 resources:
   - key: main
     path: ./dist/
