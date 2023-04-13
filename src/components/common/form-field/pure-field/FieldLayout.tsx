@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import classNames from 'classnames';
 
 import { FieldLayoutProps } from '../types';
 
@@ -13,15 +12,7 @@ const FieldLayout: React.FC<FieldLayoutProps> = ({
   labelWidth,
   labelAlign,
 }) => {
-  const hasError = useMemo(
-    () => Array.isArray(errors) && errors.some(e => e && e.level === 'error' && 'message' in e),
-    [errors],
-  );
-
-  const hasWarning = useMemo(
-    () => Array.isArray(errors) && errors.some(e => e && e.level === 'warning' && 'message' in e),
-    [errors],
-  );
+  const hasError = useMemo(() => Array.isArray(errors) && errors.some(e => e && 'message' in e), [errors]);
 
   const printableErrors = useMemo(() => {
     if (Array.isArray(errors)) {
@@ -32,12 +23,7 @@ const FieldLayout: React.FC<FieldLayoutProps> = ({
 
   return (
     <div className={className ? 'form-field-layout-root ' + className : 'form-field-layout-root'} style={style}>
-      <div
-        className={classNames('form-field-layout-root-input', {
-          'form-field-error': hasError,
-          'form-field-warning': hasWarning,
-        })}
-      >
+      <div className={hasError ? 'form-field-layout-root-input form-field-error' : 'form-field-layout-root-input'}>
         <div className={'form-field-control'}>{children}</div>
         {/* 错误消息默认占位一行，没有错误的时候充当间距的作用，尽可能减少有错误的时候引起整个表单高度明显变化 */}
         <div
@@ -46,8 +32,8 @@ const FieldLayout: React.FC<FieldLayoutProps> = ({
           }}
           className="form-field-error-message-wrapper"
         >
-          {printableErrors.map(({ message, level }, index) => (
-            <div key={index} className={`form-field-${level}-message`}>
+          {printableErrors.map(({ message }, index) => (
+            <div key={index} className={`form-field-error-message`}>
               {message}
             </div>
           ))}

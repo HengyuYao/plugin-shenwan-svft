@@ -18,7 +18,7 @@ export interface initialVersion extends Version {
 
 export interface AddItemReleaseModalProps {
   visible: boolean;
-  initialValue?: Version;
+  initialValue?: any;
   onSubmit?: (value: Version, fnc: (loading: boolean) => void) => void;
   onClose?: () => void;
   title?: string;

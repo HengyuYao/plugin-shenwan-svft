@@ -7,9 +7,10 @@ export const useExpandFields = (): { expandFields: any[] } => {
   const [expandFields, setExpandFields] = useState([]);
   useEffect(() => {
     const getVersionExpandFields = async () => {
-      const VersionExpandFieldQueryObject = new Parse.Query('VersionExpandField').include(
-        'fieldType',
-      );
+      const VersionExpandFieldQueryObject = new Parse.Query('VersionExpandField')
+        .include('fieldType')
+        .addDescending('createdAt')
+        .notEqualTo('hidden', true);
       // @ts-ignore
       const fields = await VersionExpandFieldQueryObject.find({ json: true });
       setExpandFields(fields);

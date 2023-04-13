@@ -1,7 +1,5 @@
 @theme-error-color: #ff5630;
-
 @theme-warning-color: #ffab00;
-
 @theme-success-color: #36b37e;
 
 @form-field-height: 26px;
@@ -20,43 +18,8 @@
 }
 
 .form-field-layout-root {
-  display: flex;
-  flex: 1;
   width: 100%;
-
-  .form-field-warning {
-    color: @theme-warning-color;
-
-    :global {
-      .ant-input,
-      .ant-select-selector,
-      .ant-input-number,
-      .search-popover-select-selected {
-        border-color: @theme-warning-color !important;
-
-        &:focus {
-          box-shadow: 0 0 0 1px @theme-warning-color;
-        }
-      }
-    }
-  }
-
-  .form-field-error {
-    color: @theme-error-color;
-
-    :global {
-      .ant-input,
-      .ant-select-selector,
-      .ant-input-number,
-      .search-popover-select-selected {
-        border-color: @theme-error-color !important;
-
-        &:focus {
-          box-shadow: 0 0 0 1px @theme-error-color;
-        }
-      }
-    }
-  }
+  flex: 1;
 }
 
 .form-field-vertical .form-field-label {
@@ -76,28 +39,49 @@
 }
 
 .form-field-error-message-wrapper {
-  min-height: 24px;
+  min-height: 16px;
 }
 
-.form-field-error-message,
-.form-field-warning-message {
+.form-field-error-message {
   display: flex;
   align-items: center;
   font-size: 12px;
-  line-height: 24px;
+  line-height: 16px;
 }
 
 .form-field-layout-root-input {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  width: 100%;
 }
 
 .form-field-control {
   display: flex;
   align-items: center;
-  min-height: 30px; /* 暂时不支持更大尺寸的 */
+  min-height: 30px; // 暂时不支持更大尺寸的
+
   & > div {
     flex: 1;
+  }
+}
+
+.form-field-layout-root {
+  display: flex;
+
+  .form-field-error {
+    color: @theme-error-color;
+
+    :global {
+      .@{ant-prefix}-input,
+      .@{ant-prefix}-select-selector,
+      .@{ant-prefix}-input-number,
+      .search-popover-select-selected {
+        border-color: @theme-error-color !important;
+
+        &:focus {
+          box-shadow: 0 0 0px 1px @theme-error-color;
+        }
+      }
+    }
   }
 }

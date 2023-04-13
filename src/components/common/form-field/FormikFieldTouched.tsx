@@ -9,7 +9,6 @@ const FormikFieldTouched = (): any => {
   const fields = useMemo(() => {
     // 此处的 cloneDeep 需要保留，不能被优化掉
     return merge(cloneDeep(touched), cloneDeep(errors));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(touched), errors]);
 
   useEffect(() => {

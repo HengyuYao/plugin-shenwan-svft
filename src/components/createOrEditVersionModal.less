@@ -1,0 +1,44 @@
+
+.version-modal {
+  .expand-text {
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  :global {
+    .field-description {
+      color: #909aaa;
+    }
+
+    .field-label {
+      color: #213053;
+      line-height: 26px !important;
+    }
+
+    .form-field-control {
+      display: block;
+
+      .custom_label {
+        margin-bottom: 4px;
+        color: #213053;
+
+        .required {
+          color: #ff5630;
+        }
+      }
+    }
+
+    .ant-picker-range {
+      width: 100%;
+    }
+
+    .ant-modal-body {
+      max-height: ~'calc(100vh - 350px)';
+      overflow: auto;
+      scroll-behavior: smooth;
+    }
+    .ant-picker {
+      width: 100%;
+    }
+  }
+}

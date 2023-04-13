@@ -1,23 +1,26 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { DateCell, DropdownCell, TextCell } from '@giteeteam/apps-team-components';
-import { DatePicker, Input, Modal } from 'antd';
-import dayjs, { Dayjs } from 'dayjs';
+import { Col, DatePicker, Input, message, Modal, Row, Tooltip } from 'antd';
+import dayjs from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { Formik } from 'formik';
 import { isEmpty, omit, set } from 'lodash';
 
-import { addErrorMessage, FormField, FormikFieldTouched } from '@/components/common';
-// import useFields from 'components/fields/hooks/useFields';
-// import dayjs from 'lib/dayjs';
-import { INCLUDE_VERSION_EXPAND_FIELD_TYPES } from '@/lib/global';
-// import useI18n from 'lib/hooks/useI18n';
+import { FormField, FormikFieldTouched } from '@/components/common/form-field';
 import { FormError } from '@/lib/types/common';
 import { AddItemReleaseModalProps } from '@/lib/types/version';
 
-import { Number } from './fieldComponents/index';
+import { Number, Radio } from './fieldComponents/index';
 import { useExpandFields } from './hooks';
 
-import cx from './version.less';
-
+import cx from './createOrEditVersionModal.less';
+export type DateValue = Dayjs | number | string | Date; // 兼容传入的类型为时间戳
+// 获取当前日期的当天23点59分59秒的Date格式时间
+export const getEndOfDayToDate = (date: DateValue): Date => {
+  return dayjs(date).endOf('day').toDate();
+};
+const getContainer = () => document.body;
 const { RangePicker } = DatePicker;
 const componentsInit = (type: string) => {
   switch (type) {
@@ -27,6 +30,8 @@ const componentsInit = (type: string) => {
       return DropdownCell;
     case 'Text':
       return TextCell;
+    case 'Radio':
+      return Radio;
     case 'Number':
       return Number; // TODO: 从apps-team-components引入的number字段样式会丢失，暂时用重写的
     default:
@@ -36,34 +41,48 @@ const componentsInit = (type: string) => {
 /*
  * 版本管理弹窗
  * */
-const AddVersionModal: React.FC<AddItemReleaseModalProps> = props => {
-  const { title, visible, onClose, onSubmit, initialValue, moduleName } = props;
+const CreateOrEditVersionModal: React.FC<AddItemReleaseModalProps> = props => {
+  const { title, visible, onClose, initialValue } = props;
   const { expandFields } = useExpandFields();
+
   const formikRef = useRef(null);
   const _initialValue = useMemo(() => {
-    if (!initialValue?.expandFieldValues) {
+    if (!initialValue) {
       return {
-        ...initialValue,
+        range: [getEndOfDayToDate(dayjs()), getEndOfDayToDate(dayjs())],
+      };
+    }
+    const valueInitCopy = {
+      ...initialValue,
+      range: [initialValue.startDate?.iso, initialValue.releaseDate?.iso],
+    };
+
+    if (!valueInitCopy?.expandFieldValues) {
+      return {
+        ...valueInitCopy,
         expandFieldValues: {},
       };
     }
-    return initialValue;
+
+    return valueInitCopy;
   }, [initialValue]);
+
+  console.log(_initialValue, '_initialValue');
 
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const validate = async value => {
     const errors: FormError = {};
     if (!value.name || !value.name.trim()) {
-      errors.name = addErrorMessage(errors.name, 'name有误');
+      set(errors, 'name', `名称错误`);
     } else if (value.name.trim().length > 30) {
-      errors.name = addErrorMessage(errors.name, '长度有误');
+      set(errors, 'name', `长度有误`);
     }
     if (!value.range || !value.range.length) {
-      errors.range = addErrorMessage(errors.range, '必填');
+      set(errors, 'range', `必填`);
     }
     if (value.description && value.description.length > 200) {
-      errors.description = addErrorMessage(errors.description, '描述有误');
+      set(errors, 'description', `描述有误`);
     }
 
     if (value.expandFieldValues) {
@@ -77,9 +96,46 @@ const AddVersionModal: React.FC<AddItemReleaseModalProps> = props => {
     return errors;
   };
 
-  const onSubmitForm = values => {
-    onSubmit(values, setConfirmLoading);
-  };
+  // const onSubmitForm = values => {
+  //   console.log(values, 'values');
+  //   // onSubmit(values, setConfirmLoading);
+  // };
+  const onSubmitForm = useCallback(
+    value => {
+      setConfirmLoading(true);
+      const Workspace = Parse.Object.extend('Workspace');
+      const workspaceValuePoint = Workspace.createWithoutData('mfOqDjmo3k');
+      const { objectId, name, range = [], description, expandFieldValues } = value;
+      // callback && callback(true);
+      const Version = Parse.Object.extend('Version');
+      const VersionObject = new Version({
+        objectId: objectId,
+        workspace: workspaceValuePoint,
+        name: name.trim(),
+        startDate: getEndOfDayToDate(dayjs(range[0])),
+        releaseDate: getEndOfDayToDate(dayjs(range[1])),
+        description: description,
+        expandFieldValues: expandFieldValues,
+      });
+      VersionObject.save()
+        .then(() => {
+          console.log('逞能');
+          setConfirmLoading(false);
+          message.success('成功');
+          // onClose?.();
+          // setInitialValue({});
+          // mutate();
+        })
+        .catch(e => {
+          setConfirmLoading(false);
+          message.error(e.message);
+        })
+        .finally(() => {
+          // callback && callback(false);
+        });
+    },
+    [onClose],
+  );
   const CustomLabel = ({ label, required }: { label: string; required?: boolean }) => {
     return (
       <div className="custom_label">
@@ -103,8 +159,7 @@ const AddVersionModal: React.FC<AddItemReleaseModalProps> = props => {
           title={title}
           visible={visible}
           onCancel={onClose}
-          // okText={t('global.modal.okText')}
-          // cancelText={t('global.modal.cancelText')}
+          destroyOnClose
           onOk={() => {
             expandFields.forEach(field => {
               // 保存时把字段默认值同步到formik表单中，否则校验不生效
@@ -128,7 +183,7 @@ const AddVersionModal: React.FC<AddItemReleaseModalProps> = props => {
             {({ field }) => {
               return (
                 <>
-                  <CustomLabel label="名称" required />
+                  <CustomLabel label="版本名称" required />
                   <Input {...field} />
                 </>
               );
@@ -139,17 +194,14 @@ const AddVersionModal: React.FC<AddItemReleaseModalProps> = props => {
               const { value, ...rest } = field; // rangePicker不支持默认的value
               return (
                 <>
-                  <CustomLabel label="范围" required />
+                  <CustomLabel label="时间范围" required />
                   <RangePicker
                     {...rest}
                     value={value ? [dayjs(value[0]), dayjs(value[1])] : null}
                     onChange={date => {
                       setFieldValue('range', date ? date : null);
                     }}
-                    // placeholder={[
-                    //   t('pages.version.addVersionModal.startDate'),
-                    //   t('pages.version.addVersionModal.releaseDate'),
-                    // ]}
+                    getPopupContainer={getContainer}
                   />
                 </>
               );
@@ -160,46 +212,72 @@ const AddVersionModal: React.FC<AddItemReleaseModalProps> = props => {
               return (
                 <>
                   <CustomLabel label="描述" />
-                  <Input.TextArea {...field} />
+                  <Input.TextArea {...field} placeholder="请输入描述" />
                 </>
               );
             }}
           </FormField>
-          {!!expandFields?.length && (
-            // <div className={cx('expand-text')}>{t('pages.fields.default.versionExpandField')}</div>
-            <div className={cx('expand-text')}>拓展字段</div>
-          )}
-          {expandFields?.map(ele => {
-            const FieldComponent = componentsInit(ele.fieldType.component);
-            const commonData = {
-              editMode: isEmpty(ele.editMode) ? true : ele.editMode,
-              options: ele.data && ele.data.customData,
-              value: ele.property && ele.property.defaultValue,
-              objectId: ele?.objectId,
-              label: ele.name,
-              disabled: ele.readonly,
-              required: ele.required,
-              labelAlign: 'top',
-              description: ele.property.fieldDesc,
-              ...omit(ele.data, ['customData']),
-              ...omit(ele.property, ['defaultValue']),
-            };
-            return (
-              FieldComponent && (
-                <FormField name={`expandFieldValues.${ele.key}`} key={ele.key}>
-                  {({ field }) => {
-                    // 新建字段未赋值时field.value为undefined
-                    const value = field.value === undefined ? commonData.value : field.value;
-                    return <FieldComponent {...commonData} {...field} value={value} />;
-                  }}
-                </FormField>
-              )
-            );
-          })}
+          <Row gutter={16}>
+            {expandFields?.map(ele => {
+              const FieldComponent = componentsInit(ele.fieldType.component);
+              const commonData = {
+                editMode: isEmpty(ele.editMode) ? true : ele.editMode,
+                options: ele.data && ele.data.customData,
+                value: ele.property && ele.property.defaultValue,
+                objectId: ele?.objectId,
+                label: ele.name,
+                disabled: ele.readonly,
+                required: ele.required,
+                labelAlign: 'top',
+                apply: 'field',
+                readonly: false,
+                description: ele.property.fieldDesc,
+                ...omit(ele.data, ['customData']),
+                ...omit(ele.property, ['defaultValue']),
+              };
+
+              return (
+                FieldComponent && (
+                  <Col span={ele.fieldType.component === 'Text' ? 24 : 12}>
+                    <FormField
+                      name={`expandFieldValues.${ele.key}`}
+                      required={ele.required}
+                      key={ele.key}
+                    >
+                      {({ field }) => {
+                        // 新建字段未赋值时field.value为undefined
+                        const value = field.value === undefined ? commonData.value : field.value;
+                        return (
+                          <>
+                            <div className={cx('custom-label')}>
+                              {ele.required && <span className={cx('required')}>*</span>}
+                              {ele.name}
+                              {ele.property.fieldDesc ? (
+                                <Tooltip title={ele.property.fieldDesc}>
+                                  <QuestionCircleOutlined />
+                                </Tooltip>
+                              ) : null}
+                            </div>
+
+                            <FieldComponent
+                              {...commonData}
+                              {...field}
+                              disabled={ele.readonly}
+                              value={value}
+                            />
+                          </>
+                        );
+                      }}
+                    </FormField>
+                  </Col>
+                )
+              );
+            })}
+          </Row>
         </Modal>
       )}
     </Formik>
   );
 };
 
-export default AddVersionModal;
+export default CreateOrEditVersionModal;

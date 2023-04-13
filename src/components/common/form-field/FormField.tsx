@@ -1,5 +1,4 @@
 import React from 'react';
-import cls from 'classnames';
 
 import PureField from './pure-field/PureField';
 
@@ -26,14 +25,13 @@ const FormField = ({
   required = false,
   style = {},
   className = '',
-  labelClassName = '',
   ...rest
 }: FormFieldWithRest): any => {
   const labelNode = (() => {
     if (label) {
       if (typeof label === 'string') {
         return (
-          <div className={cls('form-field-label', labelClassName)}>
+          <div className="form-field-label">
             {required && <span className="form-field-required">*</span>}
             <span>{label}</span>
           </div>

@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Input, InputNumber, Tag } from 'antd';
 import { isNil, isNumber } from 'lodash';
 
+import { BaseFieldProps } from '../types';
+
 import cx from './index.less';
 /* 四舍五入格式化数字：value: 要格式话的值  precision: 精度*/
 export const numberPrecisionInit = (value: number, precision: number): number => {
@@ -13,27 +15,7 @@ export const NumberMaxMin = {
   Max: 999999999,
   Min: -999999999,
 };
-export type BaseFieldProps = {
-  required?: boolean;
-  width?: number;
-  label?: string;
-  value?: number;
-  description?: string;
-  onChange?: (data: number) => void;
-  onBlur?: (e: any) => void;
-  descPlacement?: string;
-  defaultValue?: number;
-  placeholder?: string;
-  addonBefore?: string; // 前缀
-  addonAfter?: string; // 后缀
-  max?: number;
-  min?: number;
-  step?: number;
-  precision?: number; // 精度
-  type?: string; // int或float
-  searchComponent?: boolean;
-  disabled?: boolean;
-};
+
 export const numberRangeInit = (val: number, defaultValue: number): number => {
   return isNumber(val) ? val : defaultValue;
 };
@@ -135,7 +117,6 @@ const FieldNumber: React.FC<BaseFieldProps> = props => {
 };
 FieldNumber.defaultProps = {
   required: false,
-
   addonBefore: '',
   addonAfter: '',
   type: 'int',
