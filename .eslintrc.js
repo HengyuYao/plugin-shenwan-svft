@@ -73,21 +73,21 @@
   },
   overrides: [
     {
-      // enable the rule specifically for TypeScript fileList
-      fileList: ['*.ts', '*.tsx'],
+      // enable the rule specifically for TypeScript files
+      files: ['*.ts', '*.tsx'],
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': ['warn'],
       },
     },
     {
-      fileList: ['*.ts', '*.tsx', '*.js'],
+      files: ['*.ts', '*.tsx', '*.js'],
       rules: {
         // 'simple-import-sort/imports': 'off',
         // 'import/order': ['error', { 'newlines-between': 'always' }],
         'simple-import-sort/imports': [
           'error',
           {
-            groupList: [
+            groups: [
               // Node.js builtins. You could also generate this regex if you use a `.js` config.
               // For example: `^(${require("module").builtinModules.join("|")})(/|$)`
               [

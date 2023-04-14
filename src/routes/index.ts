@@ -2,7 +2,7 @@ import React from "react";
 
 const routes = [
   {
-    path: "/add-version",
+    path: "/",
     component: React.lazy(() => import("../pages/add-version")),
     exact: true,
   },

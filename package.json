@@ -1,6 +1,6 @@
 {
   "name": "plugin-hs-generate-item-information",
-  "version": "3.2.3",
+  "version": "3.8.0",
   "description": "",
   "private": true,
   "scripts": {
@@ -17,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@giteeteam/apps-team-api": "^0.2.6",
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
@@ -68,9 +69,11 @@
     "webpackbar": "^5.0.0-3"
   },
   "dependencies": {
-    "@giteeteam/apps-team-api": "^0.2.6",
     "@ant-design/icons": "^4.7.0",
     "@projectproxima/plugin-sdk": "^0.1.7",
+    "@giteeteam/apps-team-components": "0.3.12-202301301530",
+    "dayjs": "^1.11.1",
+    "formik": "^2.2.9",
     "antd": "^4.16.13",
     "axios": "^0.21.4",
     "base-64": "^1.0.0",
@@ -79,7 +82,6 @@
     "debug": "^4.3.4",
     "dotenv": "^16.0.3",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "isEmpty": "link:lodash/fp/isEmpty",
     "lodash": "^4.17.20",
     "parse": "^3.3.0",
     "rc-tree": "^5.7.0",
