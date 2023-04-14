@@ -22,3 +22,18 @@ export function handlePadNumbLength(numb) {
 
   return padString.padStart(ITEM_NUMB_LEN, "0");
 }
+
+export function formate(time) {
+  const date  = new Date(time + 1000 * 60 * 60 * 8);
+  if (date instanceof Date) {
+
+    const Y = date.getUTCFullYear() + '-';
+    const M = (date.getUTCMonth() + 1 < 10 ? '0' + (date.getUTCMonth() + 1) : (date.getUTCMonth() + 1)) + '-';
+    const D = (date.getUTCDate() < 10 ? '0' + date.getUTCDate() : date.getUTCDate()) + ' ';
+    const h = (date.getUTCHours() < 10 ? '0' + date.getUTCHours() : date.getUTCHours()) + ':';
+    const m = (date.getUTCMinutes() < 10 ? '0' + date.getUTCMinutes() : date.getUTCMinutes()) + ':';
+    const s = (date.getUTCSeconds() < 10 ? '0' + date.getUTCSeconds() : date.getUTCSeconds());
+
+    return Y+M+D+h+m+s;
+  }
+}

@@ -11,6 +11,11 @@ const routes = [
     component: React.lazy(() => import("../pages/edit-version")),
     exact: true,
   },
+  {
+    path: "/pipe-router",
+    component: React.lazy(() => import("../pages/pipe-router")),
+    exact: true,
+  },
 ];
 
 export default routes;

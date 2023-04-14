@@ -1,6 +1,6 @@
 app:
   key: svft_app
-  version: "1.0.2-alpha.2"
+  version: "1.0.2-alpha.8"
   name: "svft对接"
 modules:
   webtrigger:
@@ -23,6 +23,13 @@ modules:
       title: 编辑版本
       loadType: Micro
       route: /edit-version
+      displayCondition:
+        programVersion: true
+    - key: version-action-pipe
+      resource: main
+      title: 创建集成交付版本
+      loadType: Micro
+      route: /pipe-router
       displayCondition:
         programVersion: true
   proxima:versionListHeaderAction:
